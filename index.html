@@ -138,27 +138,31 @@
         }
 
         // Function to randomly place Dobby mascots in the background
-        function placeDobbies() {
-            const dobbyCount = 15; // Number of Dobbies to display
-            const dobbyImageUrl = 'mascot.png'; // A simple Dobby placeholder
+        // Function to randomly place Dobby mascots in the background
+function placeDobbies() {
+    const dobbyCount = 15; // Number of Dobbies to display
+    const dobbyImageUrl = 'mascot.png'; // A simple Dobby placeholder
 
-            for (let i = 0; i < dobbyCount; i++) {
-                const dobbyImg = document.createElement('img');
-                dobbyImg.src = dobbyImageUrl;
-                dobbyImg.alt = 'Dobby the House Elf';
-                dobbyImg.classList.add('dobby-bg');
+    for (let i = 0; i < dobbyCount; i++) {
+        const dobbyImg = document.createElement('img');
+        dobbyImg.src = dobbyImageUrl;
+        dobbyImg.alt = 'Dobby the House Elf';
+        dobbyImg.classList.add('dobby-bg');
 
-                // Generate random positions and rotation
-                const top = Math.random() * 100;
-                const left = Math.random() * 100;
-                const rotation = Math.random() * 360;
-                
-                dobbyImg.style.top = `${top}%`;
-                dobbyImg.style.left = `${left}%`;
-                dobbyImg.style.transform = `rotate(${rotation}deg)`;
-                
-                dobbyContainer.appendChild(dobbyImg);
-            }
+        // Generate random positions and rotation
+        const top = Math.random() * 100;
+        const left = Math.random() * 100;
+        const rotation = Math.random() * 360;
+
+        dobbyImg.style.top = `${top}%`;
+        dobbyImg.style.left = `${left}%`;
+        dobbyImg.style.transform = `rotate(${rotation}deg)`;
+        dobbyImg.style.opacity = 1; // Always fully visible
+
+        dobbyContainer.appendChild(dobbyImg);
+    }
+}
+
         }
 
         // Event Listeners
@@ -173,5 +177,6 @@
     </script>
 </body>
 </html>
+
 
 
