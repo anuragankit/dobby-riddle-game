@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dobby's Riddle Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Hide scrollbars caused by randomly placed Dobbies */
+        }
+        .font-magic {
+            font-family: 'Playfair Display', serif;
+        }
+        .riddle-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+        }
+        .dobby-bg {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            opacity: 0.15;
+            pointer-events: none; /* Make images unclickable */
+            transition: transform 0.3s ease;
+        }
+        .dobby-bg:hover {
+            transform: scale(1.1) rotate(5deg) !important;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-200 via-pink-200 to-yellow-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Dobby Background Container -->
+    <div id="dobby-container" class="absolute top-0 left-0 w-full h-full z-0"></div>
+
+    <!-- Main Game Card -->
+    <main class="w-full max-w-lg p-8 space-y-6 rounded-2xl shadow-2xl text-center z-10 riddle-card">
+        <header>
+            <h1 class="font-magic text-4xl md:text-5xl text-purple-800">Dobby's Riddle Game</h1>
+            <p class="text-gray-600 mt-2">Dobby has a riddle for you! Can you solve it?</p>
+        </header>
+
+        <!-- Riddle Display -->
+        <div class="bg-yellow-50/50 p-6 rounded-lg border border-yellow-200 min-h-[120px] flex items-center justify-center">
+            <p id="riddle-text" class="text-lg md:text-xl text-gray-800"></p>
+        </div>
+
+        <!-- Answer Display (Initially Hidden) -->
+        <div id="answer-container" class="hidden bg-green-50/50 p-4 rounded-lg border border-green-200">
+            <h3 class="font-bold text-green-800">The Answer is:</h3>
+            <p id="answer-text" class="text-lg text-green-900 mt-1"></p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button id="show-answer-btn" class="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                Show Answer
+            </button>
+            <button id="new-riddle-btn" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                New Riddle
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Store riddles in a JSON-like array of objects
+        const riddles = [
+            {
+                "riddle": "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
+                "answer": "A map"
+            },
+            {
+                "riddle": "What has an eye, but cannot see?",
+                "answer": "A needle"
+            },
+            {
+                "riddle": "The more you take, the more you leave behind. What am I?",
+                "answer": "Footsteps"
+            },
+            {
+                "riddle": "What is full of holes but still holds water?",
+                "answer": "A sponge"
+            },
+            {
+                "riddle": "What question can you never answer yes to?",
+                "answer": "Are you asleep yet?"
+            },
+            {
+                "riddle": "What is always in front of you but can’t be seen?",
+                "answer": "The future"
+            },
+            {
+                "riddle": "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
+                "answer": "An echo"
+            },
+            {
+                "riddle": "What has to be broken before you can use it?",
+                "answer": "An egg"
+            }
+        ];
+
+        // DOM Elements
+        const riddleText = document.getElementById('riddle-text');
+        const answerText = document.getElementById('answer-text');
+        const answerContainer = document.getElementById('answer-container');
+        const showAnswerBtn = document.getElementById('show-answer-btn');
+        const newRiddleBtn = document.getElementById('new-riddle-btn');
+        const dobbyContainer = document.getElementById('dobby-container');
+
+        let currentRiddle = {};
+
+        // Function to display a new random riddle
+        function displayNewRiddle() {
+            // Hide the answer from the previous riddle
+            answerContainer.classList.add('hidden');
+            showAnswerBtn.disabled = false;
+            
+            // Get a random riddle
+            const randomIndex = Math.floor(Math.random() * riddles.length);
+            currentRiddle = riddles[randomIndex];
+
+            // Update the UI
+            riddleText.textContent = currentRiddle.riddle;
+            answerText.textContent = currentRiddle.answer;
+        }
+
+        // Function to show the answer
+        function showAnswer() {
+            answerContainer.classList.remove('hidden');
+            showAnswerBtn.disabled = true;
+        }
+
+        // Function to randomly place Dobby mascots in the background
+        function placeDobbies() {
+            const dobbyCount = 15; // Number of Dobbies to display
+            const dobbyImageUrl = 'mascot.jpg'; // A simple Dobby placeholder
+
+            for (let i = 0; i < dobbyCount; i++) {
+                const dobbyImg = document.createElement('img');
+                dobbyImg.src = dobbyImageUrl;
+                dobbyImg.alt = 'Dobby the House Elf';
+                dobbyImg.classList.add('dobby-bg');
+
+                // Generate random positions and rotation
+                const top = Math.random() * 100;
+                const left = Math.random() * 100;
+                const rotation = Math.random() * 360;
+                
+                dobbyImg.style.top = `${top}%`;
+                dobbyImg.style.left = `${left}%`;
+                dobbyImg.style.transform = `rotate(${rotation}deg)`;
+                
+                dobbyContainer.appendChild(dobbyImg);
+            }
+        }
+
+        // Event Listeners
+        showAnswerBtn.addEventListener('click', showAnswer);
+        newRiddleBtn.addEventListener('click', displayNewRiddle);
+
+        // Initial setup on page load
+        window.onload = () => {
+            placeDobbies();
+            displayNewRiddle();
+        };
+    </script>
+</body>
+</html>
+
