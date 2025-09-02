@@ -27,11 +27,20 @@
             height: 80px;
             opacity: 0.15;
             pointer-events: none; /* Make images unclickable */
-            transition: transform 0.3s ease;
+            animation: floatAround linear infinite;
         }
         .dobby-bg:hover {
             transform: scale(1.1) rotate(5deg) !important;
             opacity: 0.3;
+        }
+
+        /* Floating animation */
+        @keyframes floatAround {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            25%  { transform: translate(30px, -50px) rotate(90deg); }
+            50%  { transform: translate(-40px, 30px) rotate(180deg); }
+            75%  { transform: translate(50px, 40px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
     </style>
 </head>
@@ -72,38 +81,14 @@
     <script>
         // Store riddles in a JSON-like array of objects
         const riddles = [
-            {
-                "riddle": "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
-                "answer": "A map"
-            },
-            {
-                "riddle": "What has an eye, but cannot see?",
-                "answer": "A needle"
-            },
-            {
-                "riddle": "The more you take, the more you leave behind. What am I?",
-                "answer": "Footsteps"
-            },
-            {
-                "riddle": "What is full of holes but still holds water?",
-                "answer": "A sponge"
-            },
-            {
-                "riddle": "What question can you never answer yes to?",
-                "answer": "Are you asleep yet?"
-            },
-            {
-                "riddle": "What is always in front of you but can’t be seen?",
-                "answer": "The future"
-            },
-            {
-                "riddle": "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
-                "answer": "An echo"
-            },
-            {
-                "riddle": "What has to be broken before you can use it?",
-                "answer": "An egg"
-            }
+            { "riddle": "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?", "answer": "A map" },
+            { "riddle": "What has an eye, but cannot see?", "answer": "A needle" },
+            { "riddle": "The more you take, the more you leave behind. What am I?", "answer": "Footsteps" },
+            { "riddle": "What is full of holes but still holds water?", "answer": "A sponge" },
+            { "riddle": "What question can you never answer yes to?", "answer": "Are you asleep yet?" },
+            { "riddle": "What is always in front of you but can’t be seen?", "answer": "The future" },
+            { "riddle": "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", "answer": "An echo" },
+            { "riddle": "What has to be broken before you can use it?", "answer": "An egg" }
         ];
 
         // DOM Elements
@@ -118,15 +103,12 @@
 
         // Function to display a new random riddle
         function displayNewRiddle() {
-            // Hide the answer from the previous riddle
             answerContainer.classList.add('hidden');
             showAnswerBtn.disabled = false;
-            
-            // Get a random riddle
+
             const randomIndex = Math.floor(Math.random() * riddles.length);
             currentRiddle = riddles[randomIndex];
 
-            // Update the UI
             riddleText.textContent = currentRiddle.riddle;
             answerText.textContent = currentRiddle.answer;
         }
@@ -137,33 +119,33 @@
             showAnswerBtn.disabled = true;
         }
 
-        // Function to randomly place Dobby mascots in the background
-        // Function to randomly place Dobby mascots in the background
-    function placeDobbies() {
-    const dobbyCount = 15; // Number of Dobbies to display
-    const dobbyImageUrl = 'mascot.png'; // A simple Dobby placeholder
+        // Function to randomly place Dobby mascots in the background with floating animation
+        function placeDobbies() {
+            const dobbyCount = 15;
+            const dobbyImageUrl = 'mascot.png'; // Path to your mascot image
 
-    for (let i = 0; i < dobbyCount; i++) {
-        const dobbyImg = document.createElement('img');
-        dobbyImg.src = dobbyImageUrl;
-        dobbyImg.alt = 'Dobby the House Elf';
-        dobbyImg.classList.add('dobby-bg');
+            for (let i = 0; i < dobbyCount; i++) {
+                const dobbyImg = document.createElement('img');
+                dobbyImg.src = dobbyImageUrl;
+                dobbyImg.alt = 'Dobby the House Elf';
+                dobbyImg.classList.add('dobby-bg');
 
-        // Generate random positions and rotation
-        const top = Math.random() * 100;
-        const left = Math.random() * 100;
-        const rotation = Math.random() * 360;
+                // Random starting position
+                const top = Math.random() * 100;
+                const left = Math.random() * 100;
 
-        dobbyImg.style.top = `${top}%`;
-        dobbyImg.style.left = `${left}%`;
-        dobbyImg.style.transform = `rotate(${rotation}deg)`;
-        dobbyImg.style.opacity = 1; // Always fully visible
+                dobbyImg.style.top = `${top}%`;
+                dobbyImg.style.left = `${left}%`;
 
-        dobbyContainer.appendChild(dobbyImg);
-    }
-}
+                // Random animation duration & delay
+                const duration = Math.random() * 10 + 8; // between 8s and 18s
+                const delay = Math.random() * 5; // staggered start
+                dobbyImg.style.animationDuration = `${duration}s`;
+                dobbyImg.style.animationDelay = `${delay}s`;
 
-        
+                dobbyContainer.appendChild(dobbyImg);
+            }
+        }
 
         // Event Listeners
         showAnswerBtn.addEventListener('click', showAnswer);
@@ -177,7 +159,3 @@
     </script>
 </body>
 </html>
-
-
-
-
